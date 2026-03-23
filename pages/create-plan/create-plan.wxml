@@ -1,0 +1,135 @@
+<view class="container">
+  <van-cell-group>
+    <van-field
+      v-model="plan.name"
+      name="name"
+      label="运动名称"
+      placeholder="请输入运动名称"
+      required
+      border="{{false}}"
+    />
+    
+    <van-cell title="运动类型" is-link bindtap="showTypePicker">
+      <text>{{ plan.typeName }}</text>
+    </van-cell>
+    
+    <!-- 媒体链接相关字段（仅在音频/视频跟练时显示） -->
+    <block wx:if="{{plan.type === 'audio' || plan.type === 'video'}}">
+      <van-field
+        v-model="plan.mediaUrl"
+        name="mediaUrl"
+        label="媒体链接"
+        placeholder="请输入媒体链接"
+        border="{{false}}"
+      />
+      
+      <van-cell title="解析链接" is-link bindtap="parseMediaUrl">
+        <van-button size="small" type="primary">解析</van-button>
+      </van-cell>
+      
+      <!-- 媒体预览 -->
+      <block wx:if="{{plan.mediaInfo.title}}">
+        <view class="media-preview">
+          <image class="media-cover" src="{{plan.mediaInfo.cover}}" mode="aspectFill" />
+          <view class="media-info">
+            <text class="media-title">{{plan.mediaInfo.title}}</text>
+            <text class="media-duration">{{plan.mediaInfo.duration}}</text>
+          </view>
+        </view>
+      </block>
+    </block>
+    
+    <!-- 跑步目标相关字段（仅在户外跑步时显示） -->
+    <block wx:if="{{plan.type === 'running'}}">
+      <van-cell title="目标类型" is-link bindtap="showTargetTypePicker">
+        <text>{{ plan.targetTypeName }}</text>
+      </van-cell>
+      
+      <van-field
+        v-model="plan.targetValue"
+        name="targetValue"
+        label="{{plan.targetTypeName}}"
+        placeholder="请输入目标值"
+        type="number"
+        border="{{false}}"
+      />
+    </block>
+    
+    <van-cell title="重复周期" is-link bindtap="showRepeatPicker">
+      <text>{{ plan.repeatText }}</text>
+    </van-cell>
+    
+    <van-cell title="具体时间" is-link bindtap="showTimePicker">
+      <text>{{ plan.time }}</text>
+    </van-cell>
+    
+    <van-cell title="提醒设置">
+      <van-switch 
+        v-model="plan.remind" 
+        size="24" 
+        active-color="#4CAF50"
+        inactive-color="#ccc"
+      />
+    </van-cell>
+    
+    <van-cell title="提前提醒" wx:if="{{plan.remind}}" is-link bindtap="showRemindTimePicker">
+      <text>{{ plan.remindTimeText }}</text>
+    </van-cell>
+  </van-cell-group>
+  
+  <view class="button-container">
+    <van-button 
+      type="primary" 
+      size="large" 
+      bindtap="savePlan"
+      loading="{{saving}}"
+    >
+      保存计划
+    </van-button>
+  </view>
+  
+  <!-- 类型选择器 -->
+  <van-popup show="{{showTypePicker}}" position="bottom" bind:close="closeTypePicker">
+    <van-picker 
+      columns="{{typeColumns}}" 
+      bind:confirm="confirmType"
+      bind:cancel="closeTypePicker"
+    />
+  </van-popup>
+  
+  <!-- 重复周期选择器 -->
+  <van-popup show="{{showRepeatPicker}}" position="bottom" bind:close="closeRepeatPicker">
+    <van-picker 
+      columns="{{repeatColumns}}" 
+      bind:confirm="confirmRepeat"
+      bind:cancel="closeRepeatPicker"
+    />
+  </van-popup>
+  
+  <!-- 时间选择器 -->
+  <van-popup show="{{showTimePicker}}" position="bottom" bind:close="closeTimePicker">
+    <van-datetime-picker
+      type="time"
+      bind:confirm="confirmTime"
+      bind:cancel="closeTimePicker"
+    />
+  </van-popup>
+  
+  <!-- 目标类型选择器 -->
+  <van-popup show="{{showTargetTypePicker}}" position="bottom" bind:close="closeTargetTypePicker">
+    <van-picker 
+      columns="{{targetTypeColumns}}" 
+      bind:confirm="confirmTargetType"
+      bind:cancel="closeTargetTypePicker"
+    />
+  </van-popup>
+  
+  <!-- 提前提醒时间选择器 -->
+  <van-popup show="{{showRemindTimePicker}}" position="bottom" bind:close="closeRemindTimePicker">
+    <van-picker 
+      columns="{{remindTimeColumns}}" 
+      bind:confirm="confirmRemindTime"
+      bind:cancel="closeRemindTimePicker"
+    />
+  </van-popup>
+</view>

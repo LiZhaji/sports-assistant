@@ -1,0 +1,96 @@
+<view class="container">
+  <!-- 运动信息 -->
+  <view class="workout-info">
+    <text class="workout-name">{{plan.name}}</text>
+    <text class="workout-type">{{plan.typeName}}</text>
+  </view>
+  
+  <!-- 媒体播放器（音频/视频） -->
+  <block wx:if="{{plan.type === 'audio' || plan.type === 'video'}}">
+    <view class="media-player">
+      <image class="media-cover" src="{{plan.mediaInfo.cover}}" mode="aspectFill" />
+      <text class="media-title">{{plan.mediaInfo.title}}</text>
+      
+      <!-- 播放控制 -->
+      <view class="player-controls">
+        <van-button 
+          type="primary" 
+          size="small" 
+          bindtap="togglePlay"
+          class="control-btn"
+        >
+          {{isPlaying ? '暂停' : '播放'}}
+        </van-button>
+        <van-button 
+          type="default" 
+          size="small" 
+          bindtap="stopPlay"
+          class="control-btn"
+        >
+          停止
+        </van-button>
+      </view>
+      
+      <!-- 进度条 -->
+      <view class="progress-container">
+        <progress 
+          class="progress-bar" 
+          percent="{{progress}}" 
+          activeColor="#4CAF50" 
+        />
+        <text class="progress-text">{{formatTime(currentTime)}} / {{formatTime(duration)}}</text>
+      </view>
+    </view>
+  </block>
+  
+  <!-- 跑步模式 -->
+  <block wx:if="{{plan.type === 'running'}}">
+    <view class="running-mode">
+      <view class="running-info">
+        <text class="target-info">目标: {{plan.targetTypeName}} {{plan.targetValue}}</text>
+        <text class="distance-info">已跑: {{distance}} 公里</text>
+        <text class="time-info">用时: {{formatTime(elapsedTime)}}</text>
+      </view>
+      
+      <!-- 跑步控制 -->
+      <view class="running-controls">
+        <van-button 
+          type="{{isRunning ? 'warning' : 'primary'}}" 
+          size="large" 
+          bindtap="toggleRunning"
+          class="control-btn"
+        >
+          {{isRunning ? '暂停' : '开始'}}
+        </van-button>
+        <van-button 
+          type="danger" 
+          size="large" 
+          bindtap="finishWorkout"
+          class="control-btn"
+        >
+          完成
+        </van-button>
+      </view>
+    </view>
+  </block>
+  
+  <!-- 底部控制按钮 -->
+  <view class="bottom-controls">
+    <van-button 
+      type="default" 
+      size="large" 
+      bindtap="pauseWorkout"
+      class="control-btn"
+    >
+      暂停
+    </van-button>
+    <van-button 
+      type="danger" 
+      size="large" 
+      bindtap="endWorkout"
+      class="control-btn"
+    >
+      结束
+    </van-button>
+  </view>
+</view>

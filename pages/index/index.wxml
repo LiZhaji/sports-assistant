@@ -1,0 +1,34 @@
+<view class="container">
+  <view class="header">
+    <text class="title">每日运动计划</text>
+    <van-button type="primary" size="small" bindtap="navigateToCreate">创建计划</van-button>
+  </view>
+
+  <view class="calendar-container">
+    <van-calendar 
+      id="calendar"
+      show-mark
+      formatter="{{ calendarFormatter }}"
+      bind:confirm="onCalendarConfirm"
+    />
+  </view>
+
+  <view class="plans-container">
+    <view class="section-title">今日计划</view>
+    <block wx:for="{{todayPlans}}" wx:key="id">
+      <view class="plan-item {{item.status === 'completed' ? 'completed' : ''}}">
+        <view class="plan-info">
+          <text class="plan-name">{{item.name}}</text>
+          <text class="plan-time">{{item.time}}</text>
+        </view>
+        <view class="plan-status">
+          <text class="{{item.status === 'completed' ? 'status-completed' : 'status-pending'}}">
+            {{item.status === 'completed' ? '已完成' : '待开始'}}
+          </text>
+          <van-icon name="arrow" size="16" />
+        </view>
+      </view>
+    </block>
+    <view wx:if="{{todayPlans.length === 0}}" class="no-plans">暂无计划</view>
+  </view>
+</view>
